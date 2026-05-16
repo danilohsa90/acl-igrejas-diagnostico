@@ -1,34 +1,166 @@
 // Cole este bloco no seu Apps Script para substituir o visual do PDF privado.
 // Substitua buildPdfHtml_ e summaryCardHtml_ e adicione os helpers abaixo.
 
-function buildPdfHtml_(record){
-  var dims=(record.dimensions||[]).filter(Boolean);
-  var score=record.overallScore===null||typeof record.overallScore==='undefined'?null:Number(record.overallScore);
-  var tone=pdfTone_(record.riskLabel);
-  var summary=record.executiveSummary||{};
-  var ranked=dims.filter(function(d){return d.score!==null&&typeof d.score!=='undefined';}).sort(function(a,b){return b.score-a.score;});
-  var priorities=[];
-  dims.forEach(function(d){(d.perguntas||[]).forEach(function(q){if(q.resposta==='n'||q.resposta==='ns'){priorities.push({dim:d.label||'Dimensao',texto:q.texto||'',acao:q.acao||'',resp:q.resposta});}});});
+function buildPdfHtml_(record) {
+  const summary = record.executiveSummary || {};
+  const tone = pdfTone_(record.riskLabel);
+  const dimensions = Array.isArray(record.dimensions) ? record.dimensions : [];
+  const rankedDimensions = dimensions
+    .filter(function(dimension) {
+      return dimension.score !== null && typeof dimension.score !== 'undefined' && !Number.isNaN(Number(dimension.score));
+    })
+    .slice()
+    .sort(function(a, b) {
+      return Number(b.score) - Number(a.score);
+    });
 
-  var bars=ranked.map(function(d){var color=d.score>=61?'#c2410c':d.score>=31?'#d4a017':'#2f8f5b';return '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;font-size:13px;color:#334155"><strong>'+escapeHtml_(d.label)+'</strong><span>'+escapeHtml_(String(d.score)+'%')+'</span></div><div style="height:12px;background:#ece3d0;border-radius:999px;overflow:hidden"><div style="height:100%;width:'+Math.max(6,d.score)+'%;background:'+color+';border-radius:999px"></div></div></div>';}).join('');
+  const dimensionBarsHtml = rankedDimensions.length
+    ? rankedDimensions.map(function(dimension) {
+        const score = Number(dimension.score);
+        const width = Math.max(8, Math.min(score, 100));
+        const color = score <= 30 ? '#2f9e44' : score <= 60 ? '#d08a22' : '#c74235';
 
-  var priorityHtml=priorities.slice(0,6).map(function(item,i){var bg=item.resp==='n'?'#fee2e2':'#fff4d6';var color=item.resp==='n'?'#991b1b':'#9a6700';var tag=item.resp==='n'?'Nao':'Nao sei';return '<div style="padding:14px 16px;border:1px solid #eadfc9;border-radius:18px;background:#fffefb;margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:8px"><strong style="font-size:14px;color:#16213e">'+(i+1)+'. '+escapeHtml_(item.dim)+'</strong><span style="padding:4px 10px;border-radius:999px;background:'+bg+';color:'+color+';font-size:11px;font-weight:700">'+tag+'</span></div><div style="font-size:13px;line-height:1.7;color:#334155;margin-bottom:8px">'+escapeHtml_(item.texto)+'</div><div style="font-size:12px;line-height:1.6;color:#8a6a1f"><strong>Acao recomendada:</strong> '+escapeHtml_(item.acao||'Definir tratativa preventiva.')+'</div></div>';}).join('');
+        return [
+          '<div style="margin:0 0 14px">',
+          '<div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:6px">',
+          '<div style="font-size:13px;font-weight:700;color:#1d2745">', escapeHtml_(dimension.label || 'Dimensão'), '</div>',
+          '<div style="font-size:13px;font-weight:700;color:', color, '">', escapeHtml_(score + '%'), '</div>',
+          '</div>',
+          '<div style="height:10px;border-radius:999px;background:#e9edf5;overflow:hidden">',
+          '<div style="height:10px;width:', String(width), '%;border-radius:999px;background:', color, '"></div>',
+          '</div>',
+          '</div>'
+        ].join('');
+      }).join('')
+    : '<div style="font-size:13px;color:#64748b">Sem dimensões pontuadas para exibir.</div>';
 
-  var tables=dims.map(function(d){var scoreLabel=d.score===null||typeof d.score==='undefined'?'N/A':d.score+'%';var crit=(d.perguntas||[]).filter(function(q){return q.resposta==='n'||q.resposta==='ns';}).length;var rows=(d.perguntas||[]).map(function(q){var show=q.resposta==='n'||q.resposta==='ns';return '<tr><td style="padding:10px 12px;border-bottom:1px solid #ece4d3;vertical-align:top;color:#334155;line-height:1.55">'+escapeHtml_(q.texto||'')+'</td><td style="padding:10px 12px;border-bottom:1px solid #ece4d3;vertical-align:top;text-align:center;font-weight:700;color:#16213e">'+escapeHtml_(mapAnswerLabel_(q.resposta))+'</td><td style="padding:10px 12px;border-bottom:1px solid #ece4d3;vertical-align:top;color:#8a6a1f;line-height:1.55">'+(show?escapeHtml_(q.acao||''):'-')+'</td></tr>';}).join('');return '<div style="margin-top:18px;background:#fffdfa;border:1px solid #e5d7b3;border-radius:22px;padding:18px 20px;box-shadow:0 10px 24px rgba(22,33,62,.06)"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:12px"><div><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a6a1f;margin-bottom:6px">Dimensao avaliada</div><h3 style="margin:0;font-size:20px;color:#16213e">'+escapeHtml_(d.label||'Dimensao')+'</h3><div style="margin-top:8px;font-size:13px;line-height:1.7;color:#64748b">'+escapeHtml_(d.descricao||'')+'</div></div><div style="min-width:140px;padding:14px 16px;border-radius:18px;background:#f8f2e3;text-align:center"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a6a1f;margin-bottom:6px">Score / alertas</div><div style="font-size:24px;font-weight:700;color:#16213e">'+escapeHtml_(scoreLabel)+'</div><div style="font-size:12px;color:#64748b;margin-top:4px">'+escapeHtml_(String(crit)+' pontos prioritarios')+'</div></div></div><table style="width:100%;border-collapse:collapse;font-size:12px;background:#fff"><thead><tr style="background:#16213e;color:#fff"><th style="padding:10px 12px;text-align:left">Pergunta</th><th style="padding:10px 12px;text-align:center">Resposta</th><th style="padding:10px 12px;text-align:left">Acao recomendada</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}).join('');
+  const priorityQuestions = [];
+  dimensions.forEach(function(dimension) {
+    (dimension.perguntas || []).forEach(function(question) {
+      if (question.resposta === 'n' || question.resposta === 'ns') {
+        priorityQuestions.push({
+          dimension: dimension.label || 'Dimensão',
+          text: question.texto || '',
+          action: question.acao || ''
+        });
+      }
+    });
+  });
 
-  return ['<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4efe4;font-family:Arial,sans-serif;color:#1f2937"><div style="max-width:920px;margin:0 auto;padding:28px 26px 42px">',
-    '<div style="background:linear-gradient(135deg,#16213e 0%,#24365d 100%);border-radius:28px;padding:26px 28px 24px;color:#fff;box-shadow:0 20px 42px rgba(22,33,62,.18)"><div style="display:flex;justify-content:space-between;gap:22px;align-items:flex-start;flex-wrap:wrap"><div style="max-width:540px"><div style="display:inline-block;padding:9px 14px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.06);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#f0ddb0;margin-bottom:16px">ACL | Relatorio privado da assessoria</div><h1 style="margin:0 0 10px;font-size:30px;line-height:1.06;color:#fff3ce">Diagnostico Juridico Preventivo para Igrejas</h1><div style="font-size:14px;line-height:1.8;color:rgba(255,255,255,.82)"><strong>Igreja:</strong> ',escapeHtml_(record.churchName),'<br><strong>Denominacao / ministerio:</strong> ',escapeHtml_(record.denomination||'Nao informado'),'<br><strong>Cidade / estado:</strong> ',escapeHtml_(record.cityState||'Nao informado'),'<br><strong>Lider responsavel:</strong> ',escapeHtml_(record.leaderName||'Nao informado'),'<br><strong>Contato:</strong> ',escapeHtml_(record.contact||'Nao informado'),'<br><strong>Data:</strong> ',escapeHtml_(formatDateTime_(record.createdAt)),'</div></div><div style="min-width:220px;display:flex;justify-content:center">',pdfGauge_(score,tone.accent,tone.label),'</div></div></div>',
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 22px">',
-    summaryCardHtml_('Score geral',score===null?'N/A':score+'%',tone.strong),
-    summaryCardHtml_('Risco',record.riskLabel||'N/A',tone.strong),
-    summaryCardHtml_('Plano',record.planName||'Nao definido','#16213e'),
-    summaryCardHtml_('Acoes prioritarias',String(record.actionCount||0),'#8a6a1f'),
+  const priorityCardsHtml = priorityQuestions.length
+    ? priorityQuestions.slice(0, 8).map(function(item, index) {
+        return [
+          '<div style="border:1px solid #eadfca;border-radius:16px;padding:14px 16px;background:#fffdfa;margin:0 0 12px">',
+          '<div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#a98324;margin-bottom:8px">Prioridade ', String(index + 1), ' • ', escapeHtml_(item.dimension), '</div>',
+          '<div style="font-size:14px;font-weight:700;color:#1d2745;line-height:1.5;margin-bottom:8px">', escapeHtml_(item.text), '</div>',
+          '<div style="font-size:13px;color:#51607a;line-height:1.6"><strong>Ação sugerida:</strong> ', escapeHtml_(item.action || 'Avaliação detalhada da assessoria.'), '</div>',
+          '</div>'
+        ].join('');
+      }).join('')
+    : '<div style="font-size:13px;color:#64748b">Nenhuma ação prioritária foi marcada neste envio.</div>';
+
+  const dimensionSectionsHtml = dimensions.map(function(dimension) {
+    const scoreLabel = dimension.score === null || dimension.score === '' || typeof dimension.score === 'undefined'
+      ? 'N/A'
+      : dimension.score + '%';
+
+    const questionsHtml = (dimension.perguntas || []).map(function(question) {
+      const answer = mapAnswerLabel_(question.resposta);
+      const isPriority = question.resposta === 'n' || question.resposta === 'ns';
+
+      return [
+        '<tr>',
+        '<td style="padding:10px 12px;border-bottom:1px solid #e9edf5;vertical-align:top;color:#26344f">', escapeHtml_(question.texto || ''), '</td>',
+        '<td style="padding:10px 12px;border-bottom:1px solid #e9edf5;vertical-align:top;text-align:center;font-weight:700;color:', isPriority ? '#c74235' : '#1d2745', '">', escapeHtml_(answer), '</td>',
+        '<td style="padding:10px 12px;border-bottom:1px solid #e9edf5;vertical-align:top;color:#51607a">', isPriority ? escapeHtml_(question.acao || '') : '-', '</td>',
+        '</tr>'
+      ].join('');
+    }).join('');
+
+    return [
+      '<section style="margin:0 0 28px">',
+      '<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:10px">',
+      '<div>',
+      '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#a98324;font-weight:700;margin-bottom:4px">Dimensão</div>',
+      '<h3 style="margin:0;font-size:22px;line-height:1.1;color:#1d2745">', escapeHtml_(dimension.label || 'Dimensão'), '</h3>',
+      '</div>',
+      '<div style="font-size:28px;font-weight:700;color:', tone.accent, '">', escapeHtml_(scoreLabel), '</div>',
+      '</div>',
+      '<div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:12px">', escapeHtml_(dimension.descricao || ''), '</div>',
+      '<table style="width:100%;border-collapse:collapse;border:1px solid #e9edf5;border-radius:14px;overflow:hidden;font-size:12px">',
+      '<thead>',
+      '<tr style="background:#1d2745;color:#ffffff">',
+      '<th style="padding:11px 12px;text-align:left">Pergunta</th>',
+      '<th style="padding:11px 12px;text-align:center">Resposta</th>',
+      '<th style="padding:11px 12px;text-align:left">Ação recomendada</th>',
+      '</tr>',
+      '</thead>',
+      '<tbody>',
+      questionsHtml,
+      '</tbody>',
+      '</table>',
+      '</section>'
+    ].join('');
+  }).join('');
+
+  const topSensitive = Array.isArray(summary.pontosMaisSensveis) && summary.pontosMaisSensveis.length
+    ? summary.pontosMaisSensveis.join(' • ')
+    : '';
+
+  return [
+    '<!DOCTYPE html>',
+    '<html>',
+    '<head>',
+    '<meta charset="UTF-8">',
+    '</head>',
+    '<body style="margin:0;padding:0;background:#f4efe3;font-family:Arial,sans-serif;color:#1f2937">',
+    '<div style="max-width:980px;margin:0 auto;padding:28px 24px 40px">',
+    '<section style="overflow:hidden;border-radius:28px;background:linear-gradient(180deg,#1d2745,#273456);color:#f8f3e8;box-shadow:0 20px 48px rgba(29,39,69,.22);margin-bottom:24px">',
+    '<div style="padding:30px 30px 24px">',
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap">',
+    '<div>',
+    '<div style="display:inline-flex;align-items:center;padding:10px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#e9d8a6;font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;margin-bottom:14px">ACL | Relatório Privado</div>',
+    '<h1 style="margin:0;font-size:34px;line-height:1.02;color:#fff7df">Diagnóstico Jurídico Preventivo para Igrejas</h1>',
+    '<div style="font-size:15px;line-height:1.7;color:#d9e2f4;margin-top:12px;max-width:620px">Relatório interno gerado a partir do formulário de diagnóstico. Este material foi preparado para leitura privada da assessoria.</div>',
     '</div>',
-    '<div style="display:grid;grid-template-columns:1.3fr .9fr;gap:14px;margin-bottom:18px"><div style="background:#fffdfa;border:1px solid #e5d7b3;border-radius:22px;padding:18px 20px;box-shadow:0 10px 24px rgba(22,33,62,.06)"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a6a1f;margin-bottom:10px">Leitura executiva</div><div style="font-size:14px;line-height:1.8;color:#334155">',escapeHtml_(summary.leitura||'Sem leitura executiva disponivel.'),'</div></div><div style="background:#fffdfa;border:1px solid #e5d7b3;border-radius:22px;padding:18px 20px;box-shadow:0 10px 24px rgba(22,33,62,.06)"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a6a1f;margin-bottom:10px">Panorama rapido</div><div style="font-size:14px;line-height:1.9;color:#334155"><strong>Maior exposicao:</strong> ',escapeHtml_(ranked[0]?ranked[0].label:'Nao identificado'),'<br><strong>Segunda prioridade:</strong> ',escapeHtml_(ranked[1]?ranked[1].label:'Nao identificado'),'<br><strong>Foco recomendado:</strong> ',escapeHtml_((summary.plano||record.planName||'Atuacao preventiva orientada')),'</div></div></div>',
-    '<div style="background:#fffdfa;border:1px solid #e5d7b3;border-radius:22px;padding:18px 20px;margin-bottom:18px;box-shadow:0 10px 24px rgba(22,33,62,.06)"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a6a1f;margin-bottom:6px">Mapa visual das dimensoes</div><div style="font-size:18px;font-weight:700;color:#16213e;margin-bottom:14px">Ranking de exposicao juridica</div>',bars,'</div>',
-    priorityHtml?'<div style="background:#fffdfa;border:1px solid #e5d7b3;border-radius:22px;padding:18px 20px;margin-bottom:18px;box-shadow:0 10px 24px rgba(22,33,62,.06)"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a6a1f;margin-bottom:6px">Prioridades imediatas</div><div style="font-size:18px;font-weight:700;color:#16213e;margin-bottom:14px">Acoes que merecem atencao primeiro</div>'+priorityHtml+'</div>':'',
-    tables,
-    '</div></body></html>'
+    pdfGauge_(record.overallScore, tone.accent, record.riskLabel),
+    '</div>',
+    '<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px">',
+    summaryCardHtml_('Igreja', record.churchName || 'Não informado', '#1d2745'),
+    summaryCardHtml_('Denominação / ministério', record.denomination || 'Não informado', '#1d2745'),
+    summaryCardHtml_('Cidade / estado', record.cityState || 'Não informado', '#1d2745'),
+    summaryCardHtml_('Líder responsável', record.leaderName || 'Não informado', '#1d2745'),
+    summaryCardHtml_('Plano recomendado', record.planName || 'Não definido', tone.accent),
+    summaryCardHtml_('Ações prioritárias', String(record.actionCount || 0), tone.accent),
+    '</div>',
+    '</div>',
+    '</section>',
+
+    '<section style="display:grid;grid-template-columns:1.2fr .8fr;gap:20px;margin-bottom:24px">',
+    '<div style="border-radius:24px;background:#fffdfa;border:1px solid #eadfca;padding:22px 22px 18px;box-shadow:0 16px 36px rgba(29,39,69,.08)">',
+    '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#a98324;font-weight:700;margin-bottom:8px">Leitura executiva</div>',
+    '<div style="font-size:15px;line-height:1.8;color:#33415f">', escapeHtml_(summary.leitura || 'Sem resumo executivo informado.'), '</div>',
+    topSensitive ? '<div style="font-size:13px;line-height:1.7;color:#51607a;margin-top:12px"><strong>Pontos mais sensíveis:</strong> ' + escapeHtml_(topSensitive) + '</div>' : '',
+    '</div>',
+    '<div style="border-radius:24px;background:#fffdfa;border:1px solid #eadfca;padding:22px 22px 18px;box-shadow:0 16px 36px rgba(29,39,69,.08)">',
+    '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#a98324;font-weight:700;margin-bottom:10px">Painel de dimensões</div>',
+    dimensionBarsHtml,
+    '</div>',
+    '</section>',
+
+    '<section style="border-radius:24px;background:#fffdfa;border:1px solid #eadfca;padding:22px 22px 12px;box-shadow:0 16px 36px rgba(29,39,69,.08);margin-bottom:24px">',
+    '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#a98324;font-weight:700;margin-bottom:12px">Ações prioritárias destacadas</div>',
+    priorityCardsHtml,
+    '</section>',
+
+    '<section style="border-radius:24px;background:#fffdfa;border:1px solid #eadfca;padding:22px 22px 4px;box-shadow:0 16px 36px rgba(29,39,69,.08)">',
+    '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#a98324;font-weight:700;margin-bottom:16px">Detalhamento por dimensão</div>',
+    dimensionSectionsHtml,
+    '</section>',
+
+    '</div>',
+    '</body>',
+    '</html>'
   ].join('');
 }
 
