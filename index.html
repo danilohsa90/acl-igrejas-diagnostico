@@ -1233,12 +1233,12 @@
       const dimensions = DIMS.map((dim, dimIndex) => ({
         key: dim.key,
         label: dim.label,
-        descrição: dim.description,
+        descricao: dim.description,
         score: scores[dimIndex],
         perguntas: dim.questions.map((question, questionIndex) => ({
           texto: question[0],
-          ação: question[1],
-          resposta: answers[dimIndex][questionIndex]
+          acao: question[1],
+          resposta: answers[dimIndex][questionIndex] || ''
         }))
       }));
 
@@ -1248,7 +1248,7 @@
         return sum + dim.perguntas.filter(item => item.resposta === 'n' || item.resposta === 'ns').length;
       }, 0);
 
-      return {
+      const payload = {
         id: 'ACL-IGR-' + Date.now(),
         data: new Date().toISOString(),
         igreja: {
@@ -1263,17 +1263,23 @@
           contato: churchData.contact
         },
         contato: churchData.contact,
-        scores,
+        scores: scores,
         scoreGeral: overallScore,
         risco: riskLabel(overallScore),
         plano: plan,
         totalAcoesPrioritarias: totalPriority,
         resumoExecutivo: buildSummary(dimensions),
-        dimensões: dimensions
+        dimensoes: dimensions,
+        dimensions: dimensions
       };
+
+      console.log('PAYLOAD ACL IGREJAS', payload);
+      return payload;
     }
 
     async function sendToGAS(payload) {
+      console.log('ENVIANDO PARA GAS', JSON.stringify(payload));
+
       try {
         await fetch(GAS_URL, {
           method: 'POST',
@@ -1284,7 +1290,7 @@
           body: JSON.stringify(payload)
         });
       } catch (error) {
-        console.error(error);
+        console.error('ERRO NO ENVIO', error);
       }
     }
 
