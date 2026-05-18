@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagnóstico Jurídico Preventivo para Igrejas | ACL</title>
+  <meta
+    name="description"
+    content="Mapeie riscos jurídicos da sua igreja em 6 dimensões críticas e envie o diagnóstico para o ambiente privado da ACL."
+  />
+  <style>
+    :root {
+      --navy: #1d2745;
+      --navy-soft: #34415f;
+      --gold: #c7a241;
+      --gold-dark: #a98324;
+      --ivory: #f8f3e8;
+      --white: #fffdfa;
+      --ink: #22314e;
+      --muted: #6d7891;
+      --line: #e4d7be;
+      --good: #2f9e44;
+      --mid: #d7982d;
+      --high: #c6463b;
+      --shadow: 0 24px 60px rgba(29, 39, 69, 0.12);
+      --radius-xl: 34px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --container: min(1120px, calc(100% - 32px));
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top, rgba(199, 162, 65, 0.12), transparent 28%),
+        linear-gradient(180deg, #faf6ed 0%, #f6efdf 100%);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .center {
+      width: var(--container);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 24px;
+      background: rgba(29, 39, 69, 0.97);
+      border-bottom: 4px solid var(--gold);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      color: var(--gold);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      line-height: 1.12;
+    }
+
+    .topbar-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #dbe3f2;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .topbar-note::before {
+      content: "";
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: #4fd76b;
+      box-shadow: 0 0 0 4px rgba(79, 215, 107, 0.18);
+      flex: none;
+    }
+
+    .hero-wrap {
+      padding: 42px 0 48px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 34px 30px 38px;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(61, 72, 101, 0.12);
+      background:
+        radial-gradient(circle at top, rgba(199, 162, 65, 0.12), transparent 36%),
+        linear-gradient(180deg, rgba(255, 252, 246, 0.94), rgba(255, 252, 246, 0.76));
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 260px;
+      height: 260px;
+      right: -120px;
+      top: -120px;
+      background: radial-gradient(circle, rgba(199, 162, 65, 0.22), transparent 70%);
+    }
+
+    .hero::after {
+      width: 190px;
+      height: 190px;
+      left: -80px;
+      bottom: -90px;
+      background: radial-gradient(circle, rgba(29, 39, 69, 0.1), transparent 72%);
+    }
+
+    .hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 74px;
+      padding: 16px 34px;
+      border-radius: 999px;
+      border: 3px solid rgba(168, 129, 27, 0.78);
+      background: rgba(255, 251, 241, 0.92);
+      color: #a17e27;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      margin: 26px auto 18px;
+      max-width: 920px;
+      font-size: clamp(54px, 8vw, 94px);
+      line-height: 0.94;
+      letter-spacing: -0.04em;
+    }
+
+    .hero h1 span {
+      display: block;
+    }
+
+    .hero h1 .navy {
+      color: var(--navy);
+    }
+
+    .hero h1 .gold {
+      color: var(--gold);
+    }
+
+    .hero p {
+      max-width: 860px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: clamp(19px, 2.2vw, 28px);
+      line-height: 1.6;
+    }
+
+    .hero p strong {
+      color: var(--navy);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      max-width: 930px;
+      margin: 28px auto 0;
+    }
+
+    .chip {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid #e3d7bf;
+      background: rgba(255, 253, 247, 0.9);
+      color: #6f7b93;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    .cta {
+      margin-top: 32px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      border: none;
+      border-radius: 18px;
+      padding: 18px 30px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, opacity 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #c39d3c, #ab8627);
+      color: #fffdfa;
+      box-shadow: 0 18px 34px rgba(171, 134, 39, 0.28);
+      font-size: 20px;
+    }
+
+    .btn-secondary {
+      background: #eef2f7;
+      color: var(--navy);
+      font-size: 17px;
+    }
+
+    .section-gap {
+      padding: 0 0 46px;
+    }
+
+    .risk-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      overflow: hidden;
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      background: rgba(255, 253, 248, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .risk-card {
+      padding: 26px 28px;
+      background: rgba(255, 255, 255, 0.52);
+      border-right: 1px solid var(--line);
+    }
+
+    .risk-card:last-child {
+      border-right: none;
+    }
+
+    .risk-card h3 {
+      margin: 0 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .risk-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      flex: none;
+    }
+
+    .dot.good {
+      background: var(--good);
+    }
+
+    .dot.mid {
+      background: #ffd24d;
+    }
+
+    .dot.high {
+      background: var(--high);
+    }
+
+    .panel {
+      overflow: hidden;
+      border-radius: 30px;
+      border: 1px solid rgba(61, 72, 101, 0.12);
+      background: rgba(255, 253, 248, 0.84);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .panel-head {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 251, 242, 0.94), rgba(255, 249, 239, 0.76));
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--gold-dark);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(30px, 4vw, 44px);
+      line-height: 1.03;
+    }
+
+    .panel-head p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .panel-body {
+      padding: 28px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .label {
+      color: #7e6933;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .input,
+    .select {
+      min-height: 56px;
+      width: 100%;
+      padding: 0 16px;
+      border-radius: 16px;
+      border: 1px solid #ddcfb3;
+      background: #fffdfa;
+      color: var(--navy);
+      font-size: 17px;
+      outline: none;
+    }
+
+    .input:focus,
+    .select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(199, 162, 65, 0.14);
+    }
+
+    .form-actions,
+    .question-actions,
+    .done-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    .dim-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .dim-card {
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid #dcd0b7;
+      background: #fffcf6;
+      box-shadow: 0 14px 34px rgba(29, 39, 69, 0.08);
+    }
+
+    .dim-card.active {
+      border-color: var(--gold);
+      background: linear-gradient(180deg, #fff8ea, #fffdf8);
+    }
+
+    .dim-card h3 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .dim-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .question-card {
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid #ded2ba;
+      background: #fffdf9;
+      box-shadow: 0 14px 34px rgba(29, 39, 69, 0.08);
+    }
+
+    .question-head h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 34px;
+      line-height: 1.08;
+    }
+
+    .question-head p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .progress {
+      overflow: hidden;
+      height: 10px;
+      margin: 16px 0 24px;
+      border-radius: 999px;
+      background: #ece4d2;
+    }
+
+    .progress > div {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--gold), #b48b2f);
+      transition: width 0.24s ease;
+    }
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .question-item {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid #e3d8c4;
+      background: #fffdfa;
+      box-shadow: 0 14px 34px rgba(29, 39, 69, 0.08);
+    }
+
+    .question-title {
+      margin: 0 0 14px;
+      color: var(--navy);
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .answers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .answer {
+      position: relative;
+      flex: 1 1 160px;
+    }
+
+    .answer input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .answer span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      width: 100%;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid #dacdaf;
+      background: #fffdf8;
+      color: var(--navy);
+      font-size: 15px;
+      text-align: center;
+      transition: all 0.18s ease;
+    }
+
+    .answer input:checked + span {
+      border-color: #b88f30;
+      background: #f8edd1;
+      color: #7e6220;
+      box-shadow: 0 10px 20px rgba(184, 143, 48, 0.18);
+    }
+
+    .done-wrap {
+      background:
+        radial-gradient(circle at top, rgba(245, 231, 188, 0.16), transparent 30%),
+        linear-gradient(180deg, #36415f, #2f3955);
+      color: #f4eedf;
+    }
+
+    .done-card {
+      padding: 30px 28px 32px;
+    }
+
+    .protocol {
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      padding: 14px 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.06);
+      color: #efe2bc;
+      font-size: 14px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      word-break: break-word;
+    }
+
+    .done-card h2 {
+      margin: 20px 0 14px;
+      color: #fff4d4;
+      font-size: clamp(38px, 5vw, 66px);
+      line-height: 0.98;
+    }
+
+    .done-card p {
+      margin: 0;
+      color: #edf1f8;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .done-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin: 24px 0;
+      align-items: stretch;
+    }
+
+    .done-box {
+      min-height: 148px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 22px 20px;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 14px 34px rgba(8, 13, 28, 0.18);
+    }
+
+    .done-box span {
+      color: #cfd8eb;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .done-box strong {
+      color: #fff8e6;
+      font-size: 21px;
+      line-height: 1.15;
+      word-break: break-word;
+    }
+
+    .micro-note {
+      margin-top: 16px;
+      color: #d7deea;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 1120px) {
+      .quiz-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dim-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .risk-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .risk-card {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .risk-card:last-child {
+        border-bottom: none;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .form-grid,
+      .done-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .chips {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        padding: 14px 14px 12px;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .brand {
+        font-size: 18px;
+        letter-spacing: 0.1em;
+      }
+
+      .topbar-note {
+        white-space: normal;
+        font-size: 12px;
+      }
+
+      .hero {
+        padding: 24px 18px 22px;
+        border-radius: 24px;
+      }
+
+      .badge {
+        width: 100%;
+        min-height: 60px;
+        padding: 12px 18px;
+        font-size: 11px;
+      }
+
+      .hero h1 {
+        font-size: clamp(42px, 13vw, 62px);
+      }
+
+      .hero p,
+      .done-card p {
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .chips,
+      .form-grid,
+      .done-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-head,
+      .panel-body,
+      .done-card {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .form-actions,
+      .question-actions,
+      .done-actions {
+        flex-direction: column;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+      }
+
+      .dim-list {
+        display: none;
+      }
+
+      .question-card {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .question-head h2 {
+        font-size: 26px;
+      }
+
+      .answers {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .answer {
+        flex: none;
+      }
+
+      .question-title {
+        font-size: 16px;
+      }
+
+      .done-card h2 {
+        font-size: 36px;
+      }
+
+      .done-box {
+        min-height: auto;
+      }
+
+      .done-box strong {
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .answers {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+
+      .dim-card {
+        min-width: 236px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Assessoria Jurídica Preventiva para Igrejas</div>
+    <div class="topbar-note">Conectado ao ambiente privado ACL</div>
+  </header>
+
+  <main>
+    <section class="hero-wrap">
+      <div class="center hero">
+        <div class="badge">ACL Assessoria Jurídica</div>
+        <h1>
+          <span class="navy">Diagnóstico Jurídico</span>
+          <span class="gold">Preventivo para Igrejas</span>
+        </h1>
+        <p>
+          Mapeie em <strong>6 dimensões críticas</strong> os principais pontos de atenção da sua igreja e envie o diagnóstico para análise interna da equipe ACL.
+        </p>
+        <div class="chips">
+          <div class="chip">24 perguntas objetivas</div>
+          <div class="chip">6 dimensões essenciais</div>
+          <div class="chip">Envio para ambiente privado</div>
+          <div class="chip">PDF reservado à Dra. Anna</div>
+        </div>
+        <div class="cta">
+          <button class="btn-primary" id="startBtn" type="button">+ Novo Diagnóstico</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-gap">
+      <div class="center risk-grid">
+        <article class="risk-card">
+          <h3><span class="dot good"></span>Baixo Risco (0-30%)</h3>
+          <p>Boa base preventiva. O foco tende a ser manutenção, organização documental e pequenos ajustes internos.</p>
+        </article>
+        <article class="risk-card">
+          <h3><span class="dot mid"></span>Risco Moderado (31-60%)</h3>
+          <p>Há vulnerabilidades relevantes. O cenário costuma pedir revisão de processos, políticas e responsabilidades.</p>
+        </article>
+        <article class="risk-card">
+          <h3><span class="dot high"></span>Risco Elevado (61-100%)</h3>
+          <p>Existem fragilidades sensíveis. O ideal é agir com prioridade para reduzir exposição jurídica e institucional.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-gap hidden" id="formSection">
+      <div class="center panel">
+        <div class="panel-head">
+          <p class="eyebrow">Etapa 1</p>
+          <h2>Informações da igreja</h2>
+          <p>Preencha os dados básicos para que o diagnóstico seja vinculado corretamente ao ambiente privado da ACL.</p>
+        </div>
+        <div class="panel-body">
+          <form id="churchForm">
+            <div class="form-grid">
+              <label class="field">
+                <span class="label">Nome da igreja</span>
+                <input class="input" name="churchName" required />
+              </label>
+              <label class="field">
+                <span class="label">Denominação / ministério</span>
+                <input class="input" name="denomination" required />
+              </label>
+              <label class="field">
+                <span class="label">Cidade / estado</span>
+                <input class="input" name="cityState" required />
+              </label>
+              <label class="field">
+                <span class="label">Tempo de existência</span>
+                <select class="select" name="timeInExistence" required>
+                  <option value="">Selecione</option>
+                  <option>Até 2 anos</option>
+                  <option>3 a 5 anos</option>
+                  <option>6 a 10 anos</option>
+                  <option>11 a 20 anos</option>
+                  <option>Mais de 20 anos</option>
+                </select>
+              </label>
+              <label class="field">
+                <span class="label">Faixa de membros / frequência</span>
+                <select class="select" name="membersBand" required>
+                  <option value="">Selecione</option>
+                  <option>Até 50 pessoas</option>
+                  <option>51 a 200 pessoas</option>
+                  <option>201 a 500 pessoas</option>
+                  <option>501 a 1000 pessoas</option>
+                  <option>Mais de 1000 pessoas</option>
+                </select>
+              </label>
+              <label class="field">
+                <span class="label">Pastor ou líder responsável</span>
+                <input class="input" name="leaderName" required />
+              </label>
+              <label class="field full">
+                <span class="label">Contato</span>
+                <input class="input" name="contact" placeholder="Telefone, WhatsApp ou e-mail" required />
+              </label>
+            </div>
+            <div class="form-actions">
+              <button class="btn-primary" type="submit">Continuar para as perguntas</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-gap hidden" id="quizSection">
+      <div class="center panel">
+        <div class="panel-head">
+          <p class="eyebrow">Etapa 2</p>
+          <h2>Diagnóstico por dimensões</h2>
+          <p>Responda com sinceridade. O objetivo aqui é mapear riscos e orientar a análise privada da assessoria.</p>
+        </div>
+        <div class="panel-body">
+          <div class="quiz-grid">
+            <aside class="dim-list" id="dimList"></aside>
+            <div class="question-card">
+              <div class="question-head">
+                <h2 id="dimTitle"></h2>
+                <p id="dimDescription"></p>
+              </div>
+              <div class="progress"><div id="progressBar" style="width: 0%"></div></div>
+              <div class="question-list" id="questionList"></div>
+              <div class="question-actions">
+                <button class="btn-secondary" id="backBtn" type="button">Voltar</button>
+                <button class="btn-primary" id="nextBtn" type="button">Avançar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-gap hidden" id="doneSection">
+      <div class="center panel done-wrap">
+        <div class="done-card">
+          <div class="protocol" id="protocolCode"></div>
+          <h2>Diagnóstico enviado com sucesso.</h2>
+          <p>Em breve entraremos em contato com a liderança responsável. O relatório completo desta igreja foi reservado para o ambiente interno da Dra. Anna Carolina Lessa.</p>
+          <div class="done-grid">
+            <div class="done-box">
+              <span>Igreja</span>
+              <strong id="doneChurch"></strong>
+            </div>
+            <div class="done-box">
+              <span>Plano recomendado</span>
+              <strong id="donePlan"></strong>
+            </div>
+            <div class="done-box">
+              <span>Contato informado</span>
+              <strong id="doneContact"></strong>
+            </div>
+          </div>
+          <p class="micro-note">Se a liderança desejar complementar alguma informação, basta responder ao contato previamente informado ou falar diretamente com a equipe da assessoria.</p>
+          <div class="done-actions">
+            <button class="btn-primary hidden" id="downloadBtn" type="button">Baixe Seu Diagnóstico Agora</button>
+            <button class="btn-secondary" id="restartBtn" type="button">Novo Diagnóstico</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwhFKI72PLcrPpB1-7OzLiDkauAb1CsOLzlFPKD09ADq7ub8n33m6XHQQDVnijfaiyQ/exec';
+
+    const DIMS = [
+      {
+        key: 'governanca',
+        label: 'Governança e documentação institucional',
+        description: 'Documentos constitutivos, representação legal e organização formal da igreja.',
+        questions: [
+          ['A igreja possui estatuto atualizado e coerente com sua atuação atual?', 'Revisar o estatuto e adequar a estrutura real da igreja.'],
+          ['As atas relevantes estão registradas e organizadas?', 'Regularizar atas e consolidar arquivo histórico mínimo.'],
+          ['A representação legal está clara e documentada?', 'Formalizar quem responde pela igreja e atualizar registros.'],
+          ['Há controle dos principais documentos institucionais?', 'Criar pasta central com documentos essenciais e responsáveis definidos.']
+        ]
+      },
+      {
+        key: 'pessoas',
+        label: 'Pessoas, voluntários e relações de trabalho',
+        description: 'Vínculos, funções, orientações e exposição trabalhista envolvendo equipe e voluntariado.',
+        questions: [
+          ['Os voluntários têm orientações mínimas sobre atuação e conduta?', 'Formalizar diretrizes básicas de voluntariado.'],
+          ['A igreja diferencia com clareza voluntários, ministros e empregados?', 'Revisar papéis e padronizar critérios de atuação.'],
+          ['Existe cuidado com pagamentos, ajudas de custo e reembolsos?', 'Organizar política mínima de reembolso e comprovação.'],
+          ['Há registro interno das funções e responsáveis por cada área?', 'Mapear funções e centralizar essa informação.']
+        ]
+      },
+      {
+        key: 'protecao',
+        label: 'Proteção de crianças, adolescentes e vulneráveis',
+        description: 'Cuidados preventivos em ministérios infantis, eventos, transporte e ambientes sensíveis.',
+        questions: [
+          ['A igreja possui autorização ou cadastro mínimo para crianças em atividades?', 'Criar ficha básica de autorização e contato responsável.'],
+          ['Existe supervisão adequada de equipes que lidam com menores?', 'Definir proporção mínima e supervisão nas atividades.'],
+          ['Há cuidado específico com transporte e saídas externas?', 'Formalizar autorização e regras para deslocamentos.'],
+          ['Existe protocolo para relato ou tratamento de incidentes?', 'Criar fluxo reservado para comunicação e resposta.']
+        ]
+      },
+      {
+        key: 'lgpd',
+        label: 'LGPD e confidencialidade pastoral',
+        description: 'Uso de dados de membros, visitantes, aconselhamento e comunicação institucional.',
+        questions: [
+          ['A igreja sabe quais dados pessoais coleta e onde armazena?', 'Mapear formulários, planilhas e sistemas usados.'],
+          ['Há critério para uso de fotos, vídeos e listas de transmissão?', 'Criar padrão de autorização e comunicação.'],
+          ['Informações pastorais sensíveis recebem tratamento reservado?', 'Separar dados sensíveis e limitar acesso.'],
+          ['Existe algum cuidado com grupos, cadastros e formulários online?', 'Revisar permissões e reduzir exposição desnecessária.']
+        ]
+      },
+      {
+        key: 'financeiro',
+        label: 'Patrimônio, financeiro e conformidade',
+        description: 'Bens, contratos, seguros, doações, fornecedores e rotinas básicas de controle.',
+        questions: [
+          ['A igreja possui controle mínimo de contratos e fornecedores?', 'Centralizar contratos e definir vencimentos importantes.'],
+          ['Há organização sobre imóveis, locações ou cessões de uso?', 'Revisar situação documental dos imóveis usados.'],
+          ['Existe rotina básica de prestação de contas e conferência interna?', 'Implementar registro periódico e responsáveis.'],
+          ['Os principais bens e equipamentos estão mapeados?', 'Criar inventário simples do patrimônio essencial.']
+        ]
+      },
+      {
+        key: 'crises',
+        label: 'Responsabilidade civil, reputação e prevenção de crises',
+        description: 'Acidentes, comunicação pública, conflitos e resposta institucional a situações críticas.',
+        questions: [
+          ['A igreja possui cuidado com segurança em cultos e eventos?', 'Mapear riscos operacionais e ajustar rotinas de apoio.'],
+          ['Existe critério para manifestações públicas em nome da igreja?', 'Definir responsáveis e tom institucional.'],
+          ['Há procedimento interno para conflitos e denúncias sensíveis?', 'Criar canal e fluxo reservado de tratamento.'],
+          ['A igreja saberia como reagir a uma crise reputacional ou incidente grave?', 'Montar resposta básica com responsáveis e passos iniciais.']
+        ]
+      }
+    ];
+
+    const formSection = document.getElementById('formSection');
+    const quizSection = document.getElementById('quizSection');
+    const doneSection = document.getElementById('doneSection');
+    const churchForm = document.getElementById('churchForm');
+    const dimList = document.getElementById('dimList');
+    const dimTitle = document.getElementById('dimTitle');
+    const dimDescription = document.getElementById('dimDescription');
+    const questionList = document.getElementById('questionList');
+    const progressBar = document.getElementById('progressBar');
+    const startBtn = document.getElementById('startBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const doneChurch = document.getElementById('doneChurch');
+    const donePlan = document.getElementById('donePlan');
+    const doneContact = document.getElementById('doneContact');
+    const protocolCode = document.getElementById('protocolCode');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    let churchData = null;
+    let currentDim = 0;
+    let answers = DIMS.map(dim => dim.questions.map(() => ''));
+
+    startBtn.addEventListener('click', () => {
+      formSection.classList.remove('hidden');
+      window.scrollTo({ top: formSection.offsetTop - 90, behavior: 'smooth' });
+    });
+
+    churchForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const formData = new FormData(churchForm);
+
+      churchData = {
+        churchName: String(formData.get('churchName') || '').trim(),
+        denomination: String(formData.get('denomination') || '').trim(),
+        cityState: String(formData.get('cityState') || '').trim(),
+        timeInExistence: String(formData.get('timeInExistence') || ''),
+        membersBand: String(formData.get('membersBand') || ''),
+        leaderName: String(formData.get('leaderName') || '').trim(),
+        contact: String(formData.get('contact') || '').trim()
+      };
+
+      formSection.classList.add('hidden');
+      quizSection.classList.remove('hidden');
+      currentDim = 0;
+      renderDimension();
+      window.scrollTo({ top: quizSection.offsetTop - 90, behavior: 'smooth' });
+    });
+
+    backBtn.addEventListener('click', () => {
+      if (currentDim === 0) {
+        quizSection.classList.add('hidden');
+        formSection.classList.remove('hidden');
+        window.scrollTo({ top: formSection.offsetTop - 90, behavior: 'smooth' });
+        return;
+      }
+
+      saveCurrentAnswers();
+      currentDim -= 1;
+      renderDimension();
+      document.querySelector('.question-card').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    });
+
+    nextBtn.addEventListener('click', async () => {
+      if (!validateCurrentDimension()) return;
+      saveCurrentAnswers();
+
+      if (currentDim < DIMS.length - 1) {
+        currentDim += 1;
+        renderDimension();
+        document.querySelector('.question-card').scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+        return;
+      }
+
+      nextBtn.disabled = true;
+      nextBtn.textContent = 'Enviando...';
+
+      const payload = buildPayload();
+      await sendToGAS(payload);
+      showDone(payload);
+
+      nextBtn.disabled = false;
+      nextBtn.textContent = 'Avançar';
+    });
+
+    restartBtn.addEventListener('click', () => {
+      churchData = null;
+      currentDim = 0;
+      answers = DIMS.map(dim => dim.questions.map(() => ''));
+      churchForm.reset();
+      doneSection.classList.add('hidden');
+      formSection.classList.remove('hidden');
+      downloadBtn.classList.add('hidden');
+      downloadBtn.onclick = null;
+      window.scrollTo({ top: formSection.offsetTop - 90, behavior: 'smooth' });
+    });
+
+    function renderDimension() {
+      const dim = DIMS[currentDim];
+      dimTitle.textContent = dim.label;
+      dimDescription.textContent = dim.description;
+      progressBar.style.width = (((currentDim + 1) / DIMS.length) * 100) + '%';
+
+      dimList.innerHTML = DIMS.map((item, index) => `
+        <div class="dim-card ${index === currentDim ? 'active' : ''}">
+          <h3>${index + 1}. ${item.label}</h3>
+          <p>${item.description}</p>
+        </div>
+      `).join('');
+
+      questionList.innerHTML = dim.questions.map((question, index) => {
+        const value = answers[currentDim][index];
+        return `
+          <div class="question-item">
+            <p class="question-title">${index + 1}. ${question[0]}</p>
+            <div class="answers">
+              ${answerOption(currentDim, index, 's', 'Sim', value)}
+              ${answerOption(currentDim, index, 'n', 'Não', value)}
+              ${answerOption(currentDim, index, 'ns', 'Não sei', value)}
+              ${answerOption(currentDim, index, 'na', 'N/A', value)}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      nextBtn.textContent = currentDim === DIMS.length - 1 ? 'Enviar Diagnóstico' : 'Avançar';
+    }
+
+    function answerOption(dimIndex, qIndex, code, label, currentValue) {
+      return `
+        <label class="answer">
+          <input type="radio" name="q-${dimIndex}-${qIndex}" value="${code}" ${currentValue === code ? 'checked' : ''}>
+          <span>${label}</span>
+        </label>
+      `;
+    }
+
+    function validateCurrentDimension() {
+      const dimAnswers = answers[currentDim].slice();
+      [...questionList.querySelectorAll('input:checked')].forEach(input => {
+        const parts = input.name.split('-');
+        dimAnswers[Number(parts[2])] = input.value;
+      });
+
+      if (dimAnswers.some(item => !item)) {
+        alert('Responda todas as perguntas desta dimensão antes de avançar.');
+        return false;
+      }
+      return true;
+    }
+
+    function saveCurrentAnswers() {
+      [...questionList.querySelectorAll('input:checked')].forEach(input => {
+        const parts = input.name.split('-');
+        answers[Number(parts[1])][Number(parts[2])] = input.value;
+      });
+    }
+
+    function scoreAnswer(value) {
+      if (value === 's') return 0;
+      if (value === 'ns') return 70;
+      if (value === 'n') return 100;
+      return null;
+    }
+
+    function computeDimensionScore(dimIndex) {
+      const values = answers[dimIndex].map(scoreAnswer).filter(value => value !== null);
+      if (!values.length) return null;
+      return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+    }
+
+    function computeOverallScore(scores) {
+      const valid = scores.filter(value => value !== null);
+      if (!valid.length) return null;
+      return Math.round(valid.reduce((sum, value) => sum + value, 0) / valid.length);
+    }
+
+    function riskLabel(score) {
+      if (score === null) return 'N/A';
+      if (score <= 30) return 'Baixo Risco';
+      if (score <= 60) return 'Risco Moderado';
+      return 'Risco Elevado';
+    }
+
+    function recommendedPlan(score) {
+      if (score === null || score <= 30) {
+        return { name: 'Essencial Pastoral', price: 'Sob consulta' };
+      }
+      if (score <= 60) {
+        return { name: 'Governança Ministerial', price: 'Sob consulta' };
+      }
+      return { name: 'Blindagem Institucional', price: 'Sob consulta' };
+    }
+
+    function buildSummary(dimensions) {
+      const sorted = [...dimensions]
+        .filter(item => item.score !== null)
+        .sort((a, b) => b.score - a.score);
+
+      const top = sorted.slice(0, 3).map(item => item.label);
+      const leitura = top.length
+        ? 'A leitura inicial indica maior atenção nas dimensões de ' + top.join(', ') + '.'
+        : 'A leitura inicial aponta necessidade de aprofundamento interno pela equipe ACL.';
+
+      return {
+        leitura,
+        pontosMaisSensveis: top
+      };
+    }
+
+    function buildPayload() {
+      const scores = DIMS.map((_, index) => computeDimensionScore(index));
+
+      const dimensions = DIMS.map((dim, dimIndex) => ({
+        key: dim.key,
+        label: dim.label,
+        descricao: dim.description,
+        score: scores[dimIndex],
+        perguntas: dim.questions.map((question, questionIndex) => ({
+          texto: question[0],
+          acao: question[1],
+          resposta: answers[dimIndex][questionIndex] || ''
+        }))
+      }));
+
+      const overallScore = computeOverallScore(scores);
+      const plan = recommendedPlan(overallScore);
+      const totalPriority = dimensions.reduce((sum, dim) => {
+        return sum + dim.perguntas.filter(item => item.resposta === 'n' || item.resposta === 'ns').length;
+      }, 0);
+
+      const payload = {
+        id: 'ACL-IGR-' + Date.now(),
+        data: new Date().toISOString(),
+        igreja: {
+          nome: churchData.churchName,
+          denominacao: churchData.denomination,
+          cidadeEstado: churchData.cityState,
+          tempoExistencia: churchData.timeInExistence,
+          membrosFaixa: churchData.membersBand
+        },
+        lideranca: {
+          responsavel: churchData.leaderName,
+          contato: churchData.contact
+        },
+        contato: churchData.contact,
+        scores: scores,
+        scoreGeral: overallScore,
+        risco: riskLabel(overallScore),
+        plano: plan,
+        totalAcoesPrioritarias: totalPriority,
+        resumoExecutivo: buildSummary(dimensions),
+        dimensoes: dimensions,
+        dimensions: dimensions
+      };
+
+      console.log('PAYLOAD ACL IGREJAS', payload);
+      return payload;
+    }
+
+    async function sendToGAS(payload) {
+      console.log('ENVIANDO PARA GAS', JSON.stringify(payload));
+
+      try {
+        await fetch(GAS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+      } catch (error) {
+        console.error('ERRO NO ENVIO', error);
+      }
+    }
+
+    function showDone(payload) {
+      formSection.classList.add('hidden');
+      quizSection.classList.add('hidden');
+      doneSection.classList.remove('hidden');
+      protocolCode.textContent = payload.id;
+      doneChurch.textContent = payload.igreja.nome;
+      donePlan.textContent = payload.plano.name;
+      doneContact.textContent = payload.contato;
+
+      downloadBtn.classList.remove('hidden');
+      downloadBtn.onclick = () => {
+        const url = `${GAS_URL}?action=getPdf&id=${encodeURIComponent(payload.id)}`;
+        window.location.href = url;
+      };
+
+      window.scrollTo({ top: doneSection.offsetTop - 90, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
